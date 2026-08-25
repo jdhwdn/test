@@ -1,0 +1,91 @@
+# Project TODO
+
+- [x] Audit the starter project structure and identify reusable bot, moderation, XP, welcome, and dashboard components.
+- [x] Define database models for Discord guild settings, category-specific log channels, moderation rules, welcome configuration, and activity records.
+- [x] Build a reusable Discord Embed logging formatter with event-specific title, icon, colour, IDs, actor, target, reason, timestamp, and optional before/after details.
+- [x] Connect professional logging to moderation, jail, XP, welcome, member, role, channel, message, and voice activity events.
+- [x] Support independent Discord channel routing for every log category.
+- [x] Build a Discord-inspired dark dashboard for bot status, recent activity, logging status, log-channel assignment, welcome messages, and moderation rules.
+- [x] Retain and wire starter moderation, XP, and welcome commands into the logging service.
+- [x] Add automated tests for log formatting, event routing, and settings validation.
+- [x] Verify the dashboard visually and verify the project build and test suite.
+- [x] Document Discord application setup, secret configuration, bot permissions, and persistent hosting requirements.
+- [x] Add tests that verify category-specific log routing selects the intended destination channel.
+- [x] Add validation tests for invalid moderation and welcome setting inputs.
+- [x] Clarify that no uploaded starter command implementation was present, so the project provides a new slash-command foundation rather than preserving undiscovered handlers.
+- [x] Enable an always-on hosting mode for the Discord Gateway connection after user confirmation — user selected Railway and received deployment guidance.
+- [x] Document the manual post-deployment process for assigning Discord log channels for every enabled category.
+- [x] Document the manual post-deployment process for setting the jail role, warning threshold, welcome destination, and welcome text.
+- [x] Document the post-deployment configuration checks the user must perform in the dashboard.
+- [x] Verify the Railway start command and PORT handling for a single web-plus-bot process.
+- [x] Document Railway environment variables, database considerations, and post-deploy Discord checks.
+- [x] Replace the pending managed always-on hosting action with the user-selected Railway deployment path.
+- [x] Add a jail record that stores every restorable member role, the jail channel, and the jail-message reference.
+- [x] Update the jail action to remove all restorable roles, assign the configured jail role, and send an information embed with a release button in the jail channel.
+- [x] Implement permission-checked release-button handling that removes the jail role and restores saved roles exactly once.
+- [x] Add detailed jail and release logs that list removed, assigned, and restored roles.
+- [x] Add dashboard configuration for the jail channel and tests for role snapshot and release validation.
+- [x] Add configurable role-based permissions for each moderation command and the release-jail button.
+- [x] Add configurable server-protection thresholds and actions for sensitive role, channel, and moderation changes.
+- [x] Log blocked or protected actions with the actor, affected resource, configured rule, and remediation outcome.
+- [x] Expose role permissions and protection rules in the control panel with validation tests.
+- [x] Verify the jail and protection schema after restart and record the result.
+- [x] Add deterministic tests for jail role planning and one-time release eligibility.
+- [x] Add tests for role-permission fallback and guard-threshold decisions and their structured log details.
+- [x] Define a strict AI action allowlist limited to safe voice moderation and movement actions.
+- [x] Reject every AI request for destructive, membership, channel, role, or server-administration actions before execution.
+- [x] Record accepted AI voice actions and rejected AI requests with safe, non-replayable log details.
+- [x] Add unit tests proving destructive natural-language intents cannot become executable actions.
+- [x] Document the AI action boundary and update the dashboard status copy accordingly.
+- [x] Prepare and attach the complete source-project package for GitHub upload with configuration left to the user.
+- [x] Verify the source archive excludes secrets, local dependencies, build artifacts, and managed workspace metadata.
+- [x] Attach the verified source archive to the user-facing delivery message.
+- [x] Repackage the deployment archive with the complete Node project structure, including package.json and lockfile at its root.
+- [x] Verify Railway-required files and commands are visible in the archive before redelivery.
+- [x] Add a `/dashboard` Discord command that sends a polished button link to the configured control-panel URL.
+- [x] Add a configurable dashboard URL with validation, UI support, tests, and documentation.
+- [x] Create a polished welcome-card background inspired by the supplied reference without copying its brand or person.
+- [x] Add dynamic welcome-card rendering with the member avatar, display name, server name, and configurable welcome text.
+- [x] Add welcome-card settings and a preview control to the dashboard.
+- [x] Test welcome-card rendering and Discord attachment delivery, then document its setup.
+- [x] Add an explicit preview action for the welcome card in the dashboard.
+- [x] Add automated coverage for welcome attachment delivery and text fallback behavior.
+- [x] Deliver the current combined bot-and-dashboard Railway archive to the user.
+- [x] Remove the production dependency on Manus OAuth and add a password-protected dashboard session suitable for Railway.
+- [x] Add a Railway dashboard-password secret, login endpoint, logout flow, and protected dashboard API access.
+- [x] Test invalid and valid dashboard login flows and document the Railway Variables required to enable them.
+- [x] Add `/join` and `/leave` commands that let an authorized member connect or disconnect the bot from their current voice room.
+- [x] Enforce safe join rules: the requester must be in a voice room and the bot must receive only connection and speaking permissions.
+- [x] Log bot voice connections and disconnections and test the command-permission decision rules.
+- [x] Exclude the supplied voice reference entirely; do not store, analyse, or clone it.
+- [x] Add a configurable Arabic Qassim-style text-to-speech integration using an independent, non-reference voice and a safe playback queue in the bot voice connection.
+- [x] Add permission-controlled voice response commands, audio playback logs, and Railway setup documentation.
+- [x] Test speech-request validation and voice-connection playback state without storing source-voice biometric data.
+- [x] Store the provided ElevenLabs key as a server-only secret and verify it is excluded from the source archive.
+- [x] Repackage and deliver the updated bot-and-dashboard archive after voice integration changes.
+- [x] Add an interaction-log category for messages addressed to the bot, slash commands, AI decisions, and bot actions only.
+- [x] Record sanitized request summaries, actor, room, decision, result, and timestamps without storing unrelated public conversation or voice audio.
+- [x] Add dashboard configuration and tests for interaction-log routing and privacy redaction.
+- [x] Add explicit Connect and Speak permission checks before `/join`, with focused test coverage.
+- [x] Add handler-level authorization and outcome tests for `/join` and `/leave`.
+- [x] Extract or mock Discord command dependencies to test `/join` و`/leave`: صلاحية المستخدم، عدم وجود روم، اتصال قائم، صلاحيات Connect/Speak، الانضمام، والخروج.
+- [x] Add a routing test proving the `interactions` category uses its configured destination channel.
+- [x] Diagnose why Railway rejects the configured dashboard password and reproduce the login failure safely.
+- [x] Fix dashboard password compatibility with Railway Variables, validate the signed session, and update the deployment archive and instructions.
+- [ ] Diagnose why the deployed Discord bot is Offline and verify Railway runtime logs, token configuration, and Gateway connection.
+- [x] Fix the empty log-channel selector by fetching Discord guild channels reliably and exposing only usable text channels.
+- [x] Add guided voice setup for `ELEVENLABS_VOICE_ID` and show clear readiness status for `/say`.
+- [x] Add safe, opt-in conversational voice replies in a joined room without recording general voice conversations or enabling administrative AI actions.
+- [x] Rename visible bot, dashboard, Embed-log, and documentation identity from Discord Guardian to مجلساوي.
+- [x] Configure a private ElevenLabs Agent for مجلساوي and document the required `ELEVENLABS_AGENT_ID` Railway variable.
+- [x] Add per-guild blacklist records with Discord User ID validation, add/remove/list dashboard controls, and database migration.
+- [x] Enforce blacklist checks before bot-directed messages, slash voice commands, AI voice actions, and wake-name voice conversations.
+- [x] Log blacklist administration actions without storing general member conversations or raw voice.
+- [x] Surface a dashboard/API readiness state for `/say` and the natural voice conversation, including missing ElevenLabs configuration.
+- [x] Restrict natural voice conversation to an explicitly configured dedicated مجلساوي voice room so unrelated room speech is never sent for transcription.
+- [x] Add focused tests proving non-designated rooms never send audio for transcription and readiness state is visible to the dashboard.
+- [x] Require an explicit per-member voice-conversation role before subscribing to that member's audio in the dedicated مجلساوي room.
+- [x] Extract and test a visible dashboard component for `/say` and conversation readiness states.
+- [x] Add a bot-level test proving `/join` in a non-designated room never starts directed conversation or subscribes to voice audio.
+- [x] Regenerate and validate the Railway archive after the final dashboard-password correction.
+- [ ] Add and verify an explicit Discord Gateway ready log for Railway Deploy Logs after redeploying with the corrected token.
