@@ -9,6 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startDiscordBot } from "../discord/bot";
+import { applyDatabaseMigrationsAtStartup } from "./migrations";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -30,6 +31,9 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  if (process.env.NODE_ENV === "production") {
+    await applyDatabaseMigrationsAtStartup();
+  }
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
