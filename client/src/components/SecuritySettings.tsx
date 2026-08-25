@@ -28,6 +28,7 @@ const COMMANDS = [
 export default function SecuritySettings({ guildId, guildName }: { guildId: string; guildName: string }) {
   const settings = trpc.settings.get.useQuery({ guildId }, { enabled: Boolean(guildId) });
   const channels = trpc.dashboard.channels.useQuery({ guildId }, { enabled: Boolean(guildId) });
+  const voiceChannels = trpc.dashboard.voiceChannels.useQuery({ guildId }, { enabled: Boolean(guildId) });
   const roles = trpc.dashboard.roles.useQuery({ guildId }, { enabled: Boolean(guildId) });
   const permissions = trpc.permissions.list.useQuery({ guildId }, { enabled: Boolean(guildId) });
   const blacklist = trpc.blacklist.list.useQuery({ guildId }, { enabled: Boolean(guildId) });
@@ -86,7 +87,8 @@ export default function SecuritySettings({ guildId, guildName }: { guildId: stri
   });
 
   if (!guildId) return <div className="guardian-surface rounded-2xl border border-border p-8 text-center text-muted-foreground">اختر سيرفراً أولاً لتعيين روم السجن والرتب والحماية.</div>;
-  if (settings.isLoading || channels.isLoading || roles.isLoading || permissions.isLoading || blacklist.isLoading) return <div className="flex min-h-64 items-center justify-center"><Loader2 className="animate-spin text-primary" /></div>;
+  if (settings.isLoading || channels.isLoading || voiceChannels.isLoading || roles.isLoading || permissions.isLoading || blacklist.isLoading) return <div className="flex min-h-64 items-center justify-center"><Loader2 className="animate-spin text-primary" /></div>;
+  if (settings.isError || blacklist.isError) return <div className="guardian-surface max-w-3xl rounded-2xl border border-rose-400/30 bg-rose-500/10 p-6 text-sm text-rose-100"><h2 className="font-bold">تعذر تحميل الإعدادات المحفوظة</h2><p className="mt-2 leading-6">{settings.error?.message ?? blacklist.error?.message ?? "تحقق من DATABASE_URL وترحيلات MySQL في Railway ثم حدّث الصفحة."}</p></div>;
 
   const selectedRole = (commandKey: (typeof COMMANDS)[number]["key"]) => permissions.data?.find(item => item.commandKey === commandKey)?.roleId ?? "";
   const updatePermission = (commandKey: (typeof COMMANDS)[number]["key"], roleId: string) => {
@@ -107,8 +109,8 @@ export default function SecuritySettings({ guildId, guildName }: { guildId: stri
             <select className="h-10 rounded-xl border border-input bg-background/65 px-3 font-normal outline-none focus:ring-2 focus:ring-ring" value={jailChannelId} onChange={event => setJailChannelId(event.target.value)}><option value="">اختر روم السجن</option>{channels.data?.map(channel => <option value={channel.id} key={channel.id}>#{channel.name}</option>)}</select>
           </label>
           <label className="grid gap-2 text-sm font-medium md:col-span-2">روم محادثة مجلساوي المخصص
-            <select className="h-10 rounded-xl border border-input bg-background/65 px-3 font-normal outline-none focus:ring-2 focus:ring-ring" value={voiceConversationChannelId} onChange={event => setVoiceConversationChannelId(event.target.value)}><option value="">لا تفعل الاستماع الصوتي</option>{channels.data?.map(channel => <option value={channel.id} key={channel.id}>#{channel.name}</option>)}</select>
-            <span className="text-xs font-normal text-muted-foreground">يحصر الاستماع في روم مخصص لمجلساوي فقط؛ لا يعالج البوت صوت الرومات العامة. ادخل هذا الروم ثم قل «يا مجلساوي» للتحدث معه.</span>
+            <select className="h-10 rounded-xl border border-input bg-background/65 px-3 font-normal outline-none focus:ring-2 focus:ring-ring" value={voiceConversationChannelId} onChange={event => setVoiceConversationChannelId(event.target.value)}><option value="">لا تفعل الاستماع الصوتي</option>{voiceChannels.data?.map(channel => <option value={channel.id} key={channel.id}>🔊 {channel.name}</option>)}</select>
+            <span className="text-xs font-normal text-muted-foreground">تظهر الرومات الصوتية التي يملك مجلساوي فيها View Channel وConnect وSpeak فقط. يحصر الاستماع في روم مخصص؛ ادخل هذا الروم ثم قل «يا مجلساوي» للتحدث معه.</span>
           </label>
           <label className="grid gap-2 text-sm font-medium md:col-span-2">رتبة الموافقة على المحادثة الصوتية
             <select className="h-10 rounded-xl border border-input bg-background/65 px-3 font-normal outline-none focus:ring-2 focus:ring-ring" value={voiceConversationRoleId} onChange={event => setVoiceConversationRoleId(event.target.value)}><option value="">اختر رتبة الموافقة (مطلوبة)</option>{roles.data?.map(role => <option value={role.id} key={role.id}>{role.name}</option>)}</select>
