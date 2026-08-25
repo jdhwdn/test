@@ -72,7 +72,7 @@
 - [x] Add a routing test proving the `interactions` category uses its configured destination channel.
 - [x] Diagnose why Railway rejects the configured dashboard password and reproduce the login failure safely.
 - [x] Fix dashboard password compatibility with Railway Variables, validate the signed session, and update the deployment archive and instructions.
-- [ ] Diagnose why the deployed Discord bot is Offline and verify Railway runtime logs, token configuration, and Gateway connection.
+- [x] Diagnose why the deployed Discord bot is Offline and verify Railway runtime logs, token configuration, and Gateway connection.
 - [x] Fix the empty log-channel selector by fetching Discord guild channels reliably and exposing only usable text channels.
 - [x] Add guided voice setup for `ELEVENLABS_VOICE_ID` and show clear readiness status for `/say`.
 - [x] Add safe, opt-in conversational voice replies in a joined room without recording general voice conversations or enabling administrative AI actions.
@@ -89,3 +89,14 @@
 - [x] Add a bot-level test proving `/join` in a non-designated room never starts directed conversation or subscribes to voice audio.
 - [x] Regenerate and validate the Railway archive after the final dashboard-password correction.
 - [ ] Add and verify an explicit Discord Gateway ready log for Railway Deploy Logs after redeploying with the corrected token.
+- [x] Fix the dedicated voice-conversation room selector so it lists only Discord voice channels the bot can view, connect to, and speak in.
+- [x] Add regression coverage for the voice-room channel query and rebuild the Railway archive after the selector fix.
+- [x] Make `/join` automatically save the authorized requester's current voice room as the dedicated مجلساوي conversation room while retaining consent-role gating.
+- [x] Add regression tests for automatic dedicated-room assignment and rebuild the Railway archive after the join-flow update.
+- [x] Fix Railway dashboard settings retrieval so saved moderation and voice fields persist after a page refresh instead of producing `settings.get` client errors.
+- [x] Fix blacklist add handling so a member is reported as existing only when a matching persisted blacklist record exists, with regression coverage.
+- [ ] Configure Railway MySQL, set `DATABASE_URL`, and apply migrations so the corrected dashboard can persist settings and blacklist entries.
+- [x] Return explicit blacklist outcomes for first add, confirmed duplicate, and unavailable database instead of inferring from a nullable record.
+- [x] Add regression coverage that models a new guild settings response and a saved settings response without returning undefined to the dashboard.
+- [x] Add a focused test for the actual blacklist add path when Railway has no DATABASE_URL.
+- [ ] Fix the Railway Node 24 build failure caused by the esbuild `--packages=external` invocation and revalidate the deployment archive.
