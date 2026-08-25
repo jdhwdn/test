@@ -1,0 +1,1 @@
+ALTER TABLE `guild_settings` ADD `voiceConversationRoleId` varchar(32);

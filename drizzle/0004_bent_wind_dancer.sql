@@ -1,0 +1,2 @@
+ALTER TABLE `activity_logs` MODIFY COLUMN `category` enum('moderation','voice','members','roles','channels','messages','xp','welcome','interactions','system') NOT NULL;--> statement-breakpoint
+ALTER TABLE `log_channel_routes` MODIFY COLUMN `category` enum('moderation','voice','members','roles','channels','messages','xp','welcome','interactions','system') NOT NULL;
