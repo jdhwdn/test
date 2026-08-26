@@ -1,0 +1,5 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+const dbMocks = vi.hoisted(() => ({ listCommunityEvents: vi.fn() }));
+vi.mock("../db", async original => ({ ...(await original<typeof import("../db")>()), listCommunityEvents: dbMocks.listCommunityEvents }));
+import { handleCommunityCommand } from "./bot";
+describe("/events handler", () => { beforeEach(() => vi.clearAllMocks()); it("shows only current-guild events without mentions", async () => { dbMocks.listCommunityEvents.mockResolvedValue([{ title: "فعالية", status: "scheduled", startsAt: new Date("2026-08-26T00:00:00.000Z") }]); const interaction = { guild: { id: "guild-events" }, channel: { isTextBased: () => true }, commandName: "events", user: { id: "m", username: "M" }, options: {}, reply: vi.fn().mockResolvedValue(undefined) } as any; await handleCommunityCommand(interaction); expect(dbMocks.listCommunityEvents).toHaveBeenCalledWith("guild-events"); expect(interaction.reply).toHaveBeenCalledWith(expect.objectContaining({ allowedMentions: { parse: [] } })); }); });
