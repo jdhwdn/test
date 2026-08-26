@@ -57,6 +57,69 @@
       "when": 1787640397180,
       "tag": "0007_greedy_king_cobra",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1787693615772,
+      "tag": "0008_careful_doomsday",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1787696522841,
+      "tag": "0009_common_stranger",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1787697044872,
+      "tag": "0010_material_fallen_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1787697518817,
+      "tag": "0011_absent_oracle",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1787698821304,
+      "tag": "0012_foamy_ultimates",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1787699928152,
+      "tag": "0013_right_blacklash",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1787700182788,
+      "tag": "0014_stormy_lyja",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1787701297308,
+      "tag": "0015_careful_storm",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1787707944837,
+      "tag": "0016_cute_titanium_man",
+      "breakpoints": true
     }
   ]
 }

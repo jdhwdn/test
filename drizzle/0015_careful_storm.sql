@@ -1,0 +1,1 @@
+ALTER TABLE `guild_settings` ADD `warningExpiryDays` int DEFAULT 30 NOT NULL;
