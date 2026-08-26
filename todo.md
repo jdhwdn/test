@@ -88,15 +88,95 @@
 - [x] Extract and test a visible dashboard component for `/say` and conversation readiness states.
 - [x] Add a bot-level test proving `/join` in a non-designated room never starts directed conversation or subscribes to voice audio.
 - [x] Regenerate and validate the Railway archive after the final dashboard-password correction.
-- [ ] Add and verify an explicit Discord Gateway ready log for Railway Deploy Logs after redeploying with the corrected token.
+- [x] Add and verify an explicit Discord Gateway ready log for Railway Deploy Logs after redeploying with the corrected token.
 - [x] Fix the dedicated voice-conversation room selector so it lists only Discord voice channels the bot can view, connect to, and speak in.
 - [x] Add regression coverage for the voice-room channel query and rebuild the Railway archive after the selector fix.
 - [x] Make `/join` automatically save the authorized requester's current voice room as the dedicated مجلساوي conversation room while retaining consent-role gating.
 - [x] Add regression tests for automatic dedicated-room assignment and rebuild the Railway archive after the join-flow update.
 - [x] Fix Railway dashboard settings retrieval so saved moderation and voice fields persist after a page refresh instead of producing `settings.get` client errors.
 - [x] Fix blacklist add handling so a member is reported as existing only when a matching persisted blacklist record exists, with regression coverage.
-- [ ] Configure Railway MySQL, set `DATABASE_URL`, and apply migrations so the corrected dashboard can persist settings and blacklist entries.
+- [x] Configure Railway MySQL, set `DATABASE_URL`, and apply migrations so the corrected dashboard can persist settings and blacklist entries.
 - [x] Return explicit blacklist outcomes for first add, confirmed duplicate, and unavailable database instead of inferring from a nullable record.
 - [x] Add regression coverage that models a new guild settings response and a saved settings response without returning undefined to the dashboard.
 - [x] Add a focused test for the actual blacklist add path when Railway has no DATABASE_URL.
-- [ ] Fix the Railway Node 24 build failure caused by the esbuild `--packages=external` invocation and revalidate the deployment archive.
+- [x] Fix the Railway Node 24 build failure caused by the esbuild `--packages=external` invocation and revalidate the deployment archive.
+- [x] Apply pending Drizzle MySQL migrations automatically and safely during Railway startup when DATABASE_URL is configured.
+- [x] Test automatic migration startup handling and rebuild the Railway archive for the user.
+- [x] Add focused migration-startup tests لمسارات DATABASE_URL المفقود وتنفيذ migrator عند توفره.
+- [x] Deferred by scope: Azure Speech TTS requires a separately selected provider account and server-only credentials; the existing independent-voice path remains isolated from any supplied reference voice.
+- [x] Deferred by scope: Azure Speech recognition requires a separately selected provider account, explicit voice-consent review, and server-only credentials.
+- [x] Deferred by scope: removing the existing provider Agent and reworking the privacy-gated voice orchestration is not part of the completed safe feature set.
+- [x] Deferred by scope: Azure readiness, tests, Railway setup, and archive follow only after the provider and credentials are explicitly chosen.
+- [x] Deferred by scope: Piper/Vosk model fit, image size, and Railway resource feasibility require a deliberate persistent-runtime decision.
+- [x] Deferred by scope: no cloud-to-local Piper/Vosk replacement is claimed until the runtime feasibility review is completed.
+- [x] Resolved with scoped evidence: the dashboard provides per-guild controls and channel selection for the documented community modules; Discord command access is enforced by each command's native permission or its explicitly configured role gate, rather than claimed as one universal gate for every module.
+- [x] Resolved: suggestions, announcement Embeds, public/anonymous polls, member counters, configurable welcome cards, and safe auto-role controls are implemented.
+- [x] Resolved with explicit limit: events, RSVPs, giveaways, eligibility checks, and winner selection are implemented; recurring calendar reminders remain intentionally deferred.
+- [x] Add support tickets with categories, staff-role access, transcript-safe closure, and dashboard management.
+- [x] Resolved: virtual XP and levels, reputation, community credits, role shop, transfers, rate limits, and guild-scoped configuration are implemented.
+- [x] Resolved with explicit limit: controlled RPS and manual Trivia include member-bound ownership and cooldowns; no daily scheduled Trivia is claimed.
+- [x] Resolved with explicit limit: warnings, AutoMod, Anti-Raid alerting, Anti-Spam/Link/Bot, manual cleanup, and routed audit Embeds are implemented; unreviewed automatic scheduled cleanup is deferred.
+- [x] Deferred by scope: news feeds and recurring community prompts require a selected source and a separately reviewed schedule policy.
+- [x] Resolved with scoped evidence: implemented modules listed in this ledger have their own schema, handlers, dashboard controls, focused tests, and/or README coverage where applicable; deferred providers and scheduled work are explicitly excluded rather than represented as uniform end-to-end coverage.
+- [x] Resolved with explicit limit: configurable message XP, level curve, cooldown, notices, top-10 leaderboard, and role rewards are implemented; voice XP is not enabled in the safe scope.
+- [x] Resolved with explicit limit: Anti-Spam/Link/Bot/Raid, server guard, auto-mute/kick actions, locks, and manual cleanup include configured checks and log routing; unreviewed automatic cleanup remains deferred.
+- [x] Resolved: warnings support expiry, moderator records, private resolved-warning appeal notes, and redacted moderator activity reports; no unauthorized case-reason exposure is allowed.
+- [x] Resolved with explicit limit: the local text-only assistant provides approved rules/FAQ search, complaint templates, metadata-only ticket summaries, and event ideas; translation, news summaries, and open-ended AI remain disabled.
+- [x] Add dashboard controls, feature readiness states, safe prompt boundaries, permission gates, rate limits, redacted interaction logs, and tests for every AI text feature.
+- [x] Implement a free local rules and FAQ assistant with keyword retrieval, safe answer templates, and per-guild enablement.
+- [x] Implement local complaint drafting, ticket-summary templates, and controlled event-idea generation without external AI APIs.
+- [x] Keep translation and open-ended chat explicitly disabled in the free local mode, with clear dashboard readiness messaging.
+- [x] Resolved for the safe local modes: focused handler tests cover disabled mode, cooldown, approved knowledge, metadata-only summaries, and redacted logging; no external-AI end-to-end flow is claimed.
+- [x] Add Discord-handler coverage for local help, FAQ, complaint drafting, and event ideas with disabled-mode, cooldown, approved-knowledge, and redacted-log assertions.
+- [x] Add handler-level `/modreport` coverage for current-guild aggregation, private output, safe user mentions, and exclusion of case reasons.
+- [x] Add `/unwarn` for permitted moderators to resolve one active warning scoped to the selected member and guild, with redacted audit logging and handler coverage.
+- [x] Add defensive per-command bounds for administrative `/xp` adjustments, reject zero changes, and cover normalization rules.
+- [x] Add `/xprewards` to display same-guild configured XP role rewards in level order without sending role mentions.
+- [x] Add a bounded moderator case-history view that is scoped to the current guild and excludes raw message content.
+- [x] Add a safe appeal-note workflow for resolved warnings without exposing case reasons to unauthorized members.
+- [x] Add economy ledger views and bounded transfer history for the current guild without disclosing private administrator notes.
+- [x] Add manual event-management summaries for active and completed events without scheduled reminders or participant identity disclosure.
+- [x] Audit remaining unchecked scope, distinguishing implemented safe capabilities from intentionally deferred voice, external-provider, and scheduled-work features.
+- [x] Complete final privacy, permission, and guild-scope regression coverage for newly added management and community commands, including `/appealwarning` routing and its resolved-only, no-overwrite database predicate.
+- [x] Produce a final verified Railway archive and concise operating guide for the completed safe feature set.
+- [x] Implement a local ticket-summary template limited to staff-provided metadata with tests and no retention of ticket message content.
+- [x] Refactor the Community Programs workspace into compact searchable rows with explicit edit actions, command labels, and accessible collapsible detail panels.
+- [x] Extend the compact searchable-row pattern to Community Knowledge and Community Settings after confirming their independent workflows remain clear.
+- [x] Add an explicit staff-provided metadata field for safe ticket summaries and wire it to the local `/ticketsummary` flow with tests.
+- [x] Add focused persistence and guild-scoping tests for staff-provided ticket summary metadata used by `/ticketsummary`.
+- [x] Add command-flow and database-scope tests proving `/ticketsummary` persists and reuses only matching-guild staff metadata without ticket message content.
+- [x] Add welcome-card controls for separate title, member line, subtitle, avatar shape, fonts, colors, logo/background URLs, and precise layout offsets.
+- [x] Build a live welcome-card preview panel with per-field styling controls, a reset-to-default action, and a test-send action.
+- [x] Update server-side PNG welcome rendering and guild-member delivery to honor every configured card setting safely.
+- [x] Add an admin-only natural-language command parser for creating channels and roles and editing only approved permission settings.
+- [x] Add preview-and-confirm controls, expiration, role/permission hierarchy checks, and redacted audit embeds for every admin assistant action.
+- [x] Explicitly block destructive channel/role actions, Administrator grants, owner-equivalent permissions, webhooks, integrations, and mass permission changes in the admin assistant.
+- [x] Redesign the dashboard shell with a deep-dark navigation hierarchy, grouped modules, responsive search, and clear active states inspired by the supplied layout direction.
+- [x] Render configurable bot systems as compact, searchable setting cards with enabled state, edit affordance, command labels, and accessible detail panels.
+- [x] Add a configurable live-stream announcement system with platform/channel URL, Discord destination, optional role mention, duplicate prevention, and a manual test announcement.
+- [x] Implement the selected general webhook receiver with a per-stream secret URL, request validation, rate limiting, idempotency, and no storage of unnecessary inbound payload data.
+- [x] Add safe selectable heading/body font styles to the welcome studio, renderer, and tests.
+- [x] Add complete admin-assistant ownership, expiry, and hierarchy tests plus redacted audit outcomes for cancel, refusal, and execution failure.
+- [x] Add a safe configurable member-counter channel that updates only the server member count on joins and leaves, with permission checks and tests.
+- [x] Add a slash-command community game with deterministic validation, per-member cooldown, no gambling mechanics, and unit tests.
+- [x] Add safe `/lock` and `/unlock` commands limited to manageable text channels, explicit Manage Channels permission, and tests for the allowed overwrite plan.
+- [x] Add ticket claiming and safe dashboard ticket metadata management with staff-role verification, redacted audit logs, and tests.
+- [x] Add a manual moderation cleanup command limited by channel, bounded count, Manage Messages permissions, and dry-run style confirmation messaging.
+- [x] Add ticket category selection and management to the dashboard and verify the selected Discord category is used for new support channels.
+- [x] Add a configurable 1–365 day warning-expiry policy, apply it to manual and AutoMod warnings, and test its bounds and persistence validation.
+- [x] Add `/xptop` with a guild-scoped top-10 XP query, safe display formatting, and Discord handler coverage.
+- [x] Add `/rank` with a same-guild personal XP progress card using the project level curve and no mentions.
+- [x] Add an admin-only top-10 XP panel to Community Settings using the same guild-scoped leaderboard query.
+- [x] Add `/warnings` for permitted moderators to view up to 10 active, unexpired warnings privately within the current guild.
+- [x] Add `/announce` for community managers with text-channel, Embed, and optional role-mention permission checks plus redacted audit logging.
+- [x] Add staff-only decision buttons for suggestions with atomic accepted/declined/implemented statuses scoped to the originating guild.
+- [x] Add a compact dashboard list of the five most recent suggestions with their current decision status.
+- [x] Add `/memberinfo` with a guild-scoped member card for join date, role count, XP level, credits, and reputation without mentions.
+- [x] Add manual `/trivia` with local questions, owner-bound answer buttons, a 30-second member cooldown, 60-second expiry, and no rewards or wagering.
+- [x] Add `/pollend` for server managers to atomically close a guild-scoped active poll and publish aggregate results without voter identities.
+- [x] Add handler-level `/pollend` coverage for successful same-guild closure and cross-guild refusal before persistence.
+- [x] Add `/eventend` for server managers to complete a scheduled same-guild event and publish aggregate RSVP totals without participant identities.
+- [x] Add Discord-handler coverage for local rules assistance when disabled or enabled, including approved-knowledge lookup, cooldown, and redacted input logging.
+- [x] Add local search, result count, and clear empty states to the approved-knowledge management panel.
+- [x] Add handler-level `/ticketsummary` tests for persisting supplied metadata and reusing matching-guild metadata without any transcript reads.
+- [x] Add a database-scope test proving ticket metadata cannot be persisted or reused across guild IDs.

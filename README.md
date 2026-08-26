@@ -16,6 +16,34 @@
 | Server changes | Member lifecycle, role, channel, and message create/update/delete-relevant events, including prior and new values where available. |
 | Control panel | Authenticated dark dashboard with connected status, current activity, independent per-category channel routing, welcome settings, and moderation settings. `/dashboard` and the exact text command `لوحة التحكم` can send an administrator a configured dashboard-link button. |
 | Welcome card | New members receive a dynamic PNG welcome card with the server name, their Discord avatar, display name, and configured welcome message; a text-only fallback is delivered if image rendering cannot complete. |
+| Stream announcements | The dashboard can create a one-time secret receiver URL for any streaming tool that sends a JSON webhook when a stream starts. مجلساوي validates the secret and HTTPS fields, rate-limits requests, prevents duplicate event IDs, then posts a configured Discord Embed and optional role mention. |
+| Safe admin assistant | `/adminassist` proposes only a public/private text channel, a no-permission role, or an @everyone visibility edit. The initiating manager must confirm within five minutes; deletion, Administrator, webhooks, integrations, and mass permissions are refused. |
+| Community interaction | Interactive polls, events, giveaways, ticket claiming, role shop, suggestions, manual announcements, XP leaderboard, member profiles, RPS, and owner-bound Trivia rounds are available through Discord and the dashboard. |
+
+## أوامر المجتمع والحماية الحديثة
+
+| الأمر | الغرض والحدود الآمنة |
+| --- | --- |
+| `/announce` | إعلان Embed إلى قناة نصية محددة. يحتاج Manage Server أو رتبة `community_manage` المضبوطة. المنشن اختياري ولا يتم إلا إذا كانت الرتبة قابلة للذكر ولدى البوت صلاحيتها. لا يحفظ لوق التدقيق نص الإعلان. |
+| `/warnings` | يعرض للمشرف المخوّل حتى 10 تحذيرات نشطة وغير منتهية للعضو في **السيرفر الحالي فقط** كرد خاص. اضبط مدة انتهاء التحذيرات من اللوحة بين يوم و365 يوماً. |
+| `/unwarn` | يحل تحذيراً نشطاً واحداً باستخدام رقمه من `/warnings` للعضو نفسه وداخل **السيرفر الحالي فقط**. يحتاج صلاحية/رتبة التحذيرات؛ لا يعرض ولا يعيد تسجيل سبب الحالة. |
+| `/appealwarning` | يتيح للعضو إضافة ملاحظة طعن خاصة من 1 إلى 600 حرف لتحذير **محلول** من سجله داخل السيرفر الحالي فقط. لا يعرض الأمر سبب التحذير أو أي بيانات حالة، ولا يقبل إلا ملاحظة واحدة لا يمكن استبدالها لكل تحذير. |
+| `/modreport` | تقرير خاص لإدارة السيرفر عن إجراءات المشرفين خلال 1–168 ساعة. يعرض أعداد الإجراءات مجمعة فقط، ولا يعرض أسباب الحالات أو محتوى الرسائل. |
+| `/modcases` | سجل خاص لإدارة السيرفر لأحدث 1–20 حالة داخل نفس السيرفر. يعرض الإجراء والمشرف والعضو والوقت فقط؛ لا يعرض الأسباب أو محتوى الرسائل. |
+| `/clean` | تنظيف يدوي محدود لقناة نصية واحدة، من 1 إلى 100 رسالة حديثة. يحتاج Manage Messages ولا ينفذ تنظيفاً تلقائياً أو مجدولاً. |
+| `/lock` و`/unlock` | يغيران إرسال الرسائل لرتبة `@everyone` في قناة نصية قابلة للإدارة فقط، بعد تحقق Manage Channels. |
+| `/memberinfo` | بطاقة عضو مقيدة بالسيرفر تعرض تاريخ الانضمام، عدد الرتب، مستوى XP، الرصيد والسمعة من دون منشن. |
+| `/xp` | تعديل إداري لـ XP عضو داخل السيرفر الحالي. يحتاج Manage Server، ويرفض الصفر ويقيّد التعديل بين **-1,000,000** و**+1,000,000** XP لكل أمر مع لوق تدقيق. |
+| `/xptop` | يعرض أعلى 10 أعضاء XP داخل السيرفر الحالي. تظهر الصدارة نفسها في بطاقة المجتمع للمديرين. |
+| `/xprewards` | يعرض حتى 25 رتبة مكافأة XP مرتبة حسب المستوى داخل السيرفر الحالي فقط. لا يرسل منشن للرتب عند العرض. |
+| `/creditslog` | يعرض للعضو نفسه آخر 1–15 عملية رصيد داخل السيرفر الحالي كرد خاص. لا يعرض أسباب العمليات أو ملاحظات الإدارة أو بيانات أعضاء آخرين. |
+| `/events` | يعرض حتى 10 فعاليات مسجلة داخل السيرفر الحالي فقط، مع الحالة والوقت. لا يعرض أسماء المشاركين ولا ينشئ تذكيرات تلقائية. |
+| `/suggest` | ينشر اقتراحاً مع أزرار **قبول** و**رفض** و**تم التنفيذ**. لا يستطيع تغيير الحالة إلا مدير أو حامل رتبة `community_manage`؛ والحسم يتم مرة واحدة وبداخل السيرفر نفسه. |
+| `/poll` و`/pollend` | التصويت بأزرار خيارات، ثم إغلاق يدوي لمدير السيرفر. `/pollend` ينشر نتائج مجمعة فقط ولا يعرض هوية المصوتين. |
+| `/trivia` و`/rps` | ألعاب ترفيهية بلا عملة أو رهانات. Trivia محلية لصاحب الجولة فقط، مدتها دقيقة وتبريدها 30 ثانية لكل عضو. |
+| `/ticketpanel` | ينشر لوحة تذاكر بفئة Discord اختيارية ورتبة فريق. يمكن للفريق المخوّل المطالبة بالتذكرة ثم إغلاقها؛ لا ينشئ مجلساوي Transcript ولا يحتفظ بمحتوى المحادثة. |
+
+> **تنبيه أمني:** حماية Anti-Raid الحالية تحسب نافذة الدخول وترسل إنذاراً ولوقاً عند تجاوز الحد، لكنها لا تطرد أعضاءً جماعياً تلقائياً. هذا مقصود لتفادي عقوبة جماعية خاطئة أثناء تدفق دخول مشروع.
 
 ## Discord configuration
 
@@ -42,6 +70,23 @@ In **Moderation and protection**, set the public deployment address in **Dashboa
 In **Welcome**, enable the option, select a text channel, and compose a message using `{user}` and `{server}`. مجلساوي converts this into a styled welcome-card image and uses the joining member’s actual Discord avatar; the supplied reference guides the warm premium visual style but is not copied with its brand or portrait. In **Moderation**, select both the jail role and jail channel. The bot must be higher than the jail role and every role it should remove or restore; Discord will not let a bot modify equal or higher roles. Assign the desired role to **/jail** and **زر فك السجن** in the command-permissions list. Leaving a command unset keeps its normal Discord permission as a fallback.
 
 The server guard starts with a sixty-second window and separate limits for role changes, channel changes, and bans. The server owner is always exempt. If a **تجاوز الحماية** role is assigned, members with that role are also exempt; grant it sparingly. When a threshold is exceeded, مجلساوي removes only roles it can manage, never claims to undo already-deleted channels, and sends a protection event to the system log category.
+
+## إعلانات البث عبر رابط استقبال عام
+
+من صفحة **المجتمع والتحكم → إعلانات البث** اختر روم الإعلان، وحدد رتبة المنشن إن احتجت، واكتب اسم المنصة ورابط القناة ونص الإعلان. اضغط **إنشاء رابط استقبال** ثم انسخ الرابط المعروض فوراً؛ السر لا يعرض مجدداً، ويمكنك إنشاء إعداد جديد أو تدوير السر عند الحاجة. اربط هذا الرابط في المنصة أو أداة الأتمتة التي ترسل إشعار بداية البث.
+
+يستقبل الرابط طلب `POST` بصيغة JSON تحتوي `title` و`url` برابط يبدأ بـ`https://`. يمكنك إضافة `eventId` ثابت وفريد لتضمن منع التكرار، و`thumbnailUrl` اختياري برابط HTTPS. مثال آمن:
+
+```json
+{
+  "title": "جلسة اللعب المسائية",
+  "url": "https://example.com/live/123",
+  "eventId": "live-123",
+  "thumbnailUrl": "https://example.com/live/123/cover.png"
+}
+```
+
+لا تخزن الخدمة جسم طلب البث الخام. تحفظ فقط بصمة الحدث لمنع إرسال الإعلان نفسه مرتين؛ وعند فشل تسليم Discord، تحرر البصمة حتى تتمكن الأداة المصدرية من إعادة المحاولة.
 
 ## بلاك ليست مجلساوي
 
