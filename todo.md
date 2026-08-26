@@ -180,3 +180,4 @@
 - [x] Add local search, result count, and clear empty states to the approved-knowledge management panel.
 - [x] Add handler-level `/ticketsummary` tests for persisting supplied metadata and reusing matching-guild metadata without any transcript reads.
 - [x] Add a database-scope test proving ticket metadata cannot be persisted or reused across guild IDs.
+- [x] Fix Railway MySQL migration 0016 syntax and regenerate the verified deployment archive.
