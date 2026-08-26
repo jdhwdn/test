@@ -1,0 +1,15 @@
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { trpc } from "@/lib/trpc";
+import { ClipboardCheck, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+export default function TicketManagement({ guildId }: { guildId: string }) {
+  const tickets = trpc.community.tickets.useQuery({ guildId }, { enabled: Boolean(guildId) });
+  const [notes, setNotes] = useState<Record<number, string>>({});
+  useEffect(() => { if (tickets.data) setNotes(Object.fromEntries(tickets.data.map(ticket => [ticket.id, ticket.staffSummaryMetadata ?? ""]))); }, [tickets.data]);
+  const save = trpc.community.saveTicketSummaryMetadata.useMutation({ onSuccess: () => { void tickets.refetch(); toast.success("تم حفظ ملاحظة التذكرة"); }, onError: error => toast.error(error.message) });
+  if (!guildId) return null;
+  return <article className="guardian-surface rounded-2xl border border-border p-5"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-300/10 text-sky-300"><ClipboardCheck className="h-5 w-5" /></div><div><p className="text-xs font-bold tracking-[0.14em] text-sky-300">TICKET DESK</p><h2 className="mt-1 text-lg font-bold">إدارة التذاكر الوصفية</h2><p className="mt-1 text-sm text-muted-foreground">تعرض الحالة والمالك والملاحظة التي يكتبها المشرف فقط؛ مجلساوي لا يخزن محتوى محادثة التذكرة.</p></div></div>{tickets.isLoading ? <div className="flex justify-center p-8"><Loader2 className="animate-spin text-primary" /></div> : <div className="mt-4 grid gap-3">{tickets.data?.slice(0, 12).map(ticket => <div key={ticket.id} className="rounded-2xl border border-border bg-black/10 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><p className="font-semibold">تذكرة #{ticket.id} <span className="text-sm font-normal text-muted-foreground">· {ticket.openerLabel}</span></p><span className={ticket.status === "closed" ? "rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground" : ticket.status === "claimed" ? "rounded-md bg-sky-400/10 px-2 py-1 text-xs text-sky-200" : "rounded-md bg-amber-400/10 px-2 py-1 text-xs text-amber-200"}>{ticket.status === "closed" ? "مغلقة" : ticket.status === "claimed" ? "مطالب بها" : "مفتوحة"}</span></div><Textarea className="mt-3 min-h-20" maxLength={1800} value={notes[ticket.id] ?? ""} placeholder="ملخص وصفي يكتبه المشرف: نوع الطلب، الإجراء، الحالة… لا تلصق محتوى المحادثة." onChange={event => setNotes(current => ({ ...current, [ticket.id]: event.target.value }))} /><div className="mt-3 flex justify-end"><Button size="sm" variant="outline" disabled={save.isPending} onClick={() => save.mutate({ guildId, id: ticket.id, metadata: (notes[ticket.id] ?? "").trim() || null })}>حفظ الملاحظة</Button></div></div>)}{tickets.data?.length === 0 ? <p className="rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground">لا توجد تذاكر حتى الآن.</p> : null}</div>}</article>;
+}

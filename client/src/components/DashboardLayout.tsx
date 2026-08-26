@@ -21,7 +21,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/useMobile";
-import { BellRing, LayoutDashboard, LogOut, PanelLeft, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { BellRing, LayoutDashboard, LogOut, PanelLeft, Search, ShieldCheck, SlidersHorizontal, UsersRound } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -31,6 +31,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: "نظرة عامة", path: "/" },
   { icon: BellRing, label: "اللوقات والتوجيه", path: "/logs" },
   { icon: ShieldCheck, label: "الإشراف", path: "/moderation" },
+  { icon: UsersRound, label: "المجتمع والتحكم", path: "/community" },
   { icon: SlidersHorizontal, label: "الترحيب", path: "/welcome" },
 ];
 
@@ -123,8 +124,10 @@ function DashboardLayoutContent({
   const { state, toggleSidebar } = useSidebar();
   const isCollapsed = state === "collapsed";
   const [isResizing, setIsResizing] = useState(false);
+  const [search, setSearch] = useState("");
   const sidebarRef = useRef<HTMLDivElement>(null);
   const activeMenuItem = menuItems.find(item => item.path === location);
+  const visibleMenuItems = menuItems.filter(item => item.label.includes(search.trim()));
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -171,8 +174,8 @@ function DashboardLayoutContent({
           className="border-r-0"
           disableTransition={isResizing}
         >
-          <SidebarHeader className="h-16 justify-center">
-            <div className="flex items-center gap-3 px-2 transition-all w-full">
+          <SidebarHeader className="gap-3 border-b border-white/5 px-3 py-3">
+            <div className="flex items-center gap-3 transition-all w-full">
               <button
                 onClick={toggleSidebar}
                 className="h-8 w-8 flex items-center justify-center hover:bg-accent rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
@@ -182,17 +185,19 @@ function DashboardLayoutContent({
               </button>
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
+                  <span className="font-bold tracking-tight truncate text-white">
                     مجلساوي
                   </span>
                 </div>
               ) : null}
             </div>
+            {!isCollapsed ? <label className="relative block"><Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={event => setSearch(event.target.value)} placeholder="ابحث في لوحة التحكم..." className="h-9 border-white/10 bg-black/20 pr-9 text-xs" /></label> : null}
           </SidebarHeader>
 
           <SidebarContent className="gap-0">
-            <SidebarMenu className="px-2 py-1">
-              {menuItems.map(item => {
+            <div className="px-4 pt-4 text-[10px] font-bold tracking-[0.18em] text-muted-foreground group-data-[collapsible=icon]:hidden">الأقسام الرئيسية</div>
+            <SidebarMenu className="px-2 py-2">
+              {visibleMenuItems.map(item => {
                 const isActive = location === item.path;
                 return (
                   <SidebarMenuItem key={item.path}>
@@ -200,7 +205,7 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`h-10 transition-all font-normal`}
+                      className={`h-11 rounded-xl transition-all font-medium ${isActive ? "bg-primary/12 shadow-[inset_2px_0_0_hsl(var(--primary))]" : "hover:bg-white/5"}`}
                     >
                       <item.icon
                         className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
@@ -213,7 +218,7 @@ function DashboardLayoutContent({
             </SidebarMenu>
           </SidebarContent>
 
-          <SidebarFooter className="p-3">
+          <SidebarFooter className="border-t border-white/5 p-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 rounded-lg px-1 py-1 hover:bg-accent/50 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
