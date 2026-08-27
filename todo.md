@@ -181,3 +181,4 @@
 - [x] Add handler-level `/ticketsummary` tests for persisting supplied metadata and reusing matching-guild metadata without any transcript reads.
 - [x] Add a database-scope test proving ticket metadata cannot be persisted or reused across guild IDs.
 - [x] Fix Railway MySQL migration 0016 syntax and regenerate the verified deployment archive.
+- [x] Expand `/adminassist` Arabic parsing for a jail-role preview and an explicit single-room visibility plan, while preserving preview, confirmation, hierarchy checks, and destructive-action blocks.
