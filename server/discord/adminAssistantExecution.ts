@@ -12,5 +12,7 @@ export function validateAdminAssistantConfirmation(input: { pending: PendingAdmi
 export function validateBotAdminAssistantCapability(proposal: Exclude<AdminAssistantProposal, { kind: "refuse" }>, capabilities: { manageChannels: boolean; manageRoles: boolean }) {
   if ((proposal.kind === "create_channel" || proposal.kind === "update_channel_visibility") && !capabilities.manageChannels) return { allowed: false, reason: "missing_manage_channels" as const };
   if (proposal.kind === "create_role" && !capabilities.manageRoles) return { allowed: false, reason: "missing_manage_roles" as const };
+  if (proposal.kind === "create_jail_role" && !capabilities.manageRoles) return { allowed: false, reason: "missing_manage_roles" as const };
+  if (proposal.kind === "create_jail_role" && !capabilities.manageChannels) return { allowed: false, reason: "missing_manage_channels" as const };
   return { allowed: true as const };
 }

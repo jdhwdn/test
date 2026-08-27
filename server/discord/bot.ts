@@ -16,6 +16,7 @@ import {
   SlashCommandOptionsOnlyBuilder,
   type Guild,
   type GuildMember,
+  type NonThreadGuildBasedChannel,
   type PermissionsBitField,
   TextChannel,
 } from "discord.js";
@@ -419,7 +420,7 @@ function commands() {
     new SlashCommandBuilder().setName("complaint").setDescription("Create a private complaint template").addStringOption(option => option.setName("subject").setDescription("Complaint title").setRequired(true).setMaxLength(160)).addStringOption(option => option.setName("details").setDescription("Relevant details").setRequired(true).setMaxLength(1400)),
     new SlashCommandBuilder().setName("eventidea").setDescription("Get a safe local event idea").addStringOption(option => option.setName("topic").setDescription("Optional topic").setMaxLength(120)),
     new SlashCommandBuilder().setName("ticketsummary").setDescription("Create a metadata-only ticket summary").setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addIntegerOption(option => option.setName("id").setDescription("Ticket ID").setRequired(true).setMinValue(1)).addStringOption(option => option.setName("metadata").setDescription("Staff-provided metadata only; no transcript").setMaxLength(1800)),
-    new SlashCommandBuilder().setName("adminassist").setDescription("Preview a safe channel or role request before confirmation").setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(option => option.setName("request").setDescription("Example: create private channel staff-room").setRequired(true).setMaxLength(300)),
+    new SlashCommandBuilder().setName("adminassist").setDescription("Preview a safe channel, role, or jail-role request before confirmation").setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(option => option.setName("request").setDescription("Example: أنشئ رتبة اسمها تالف خاصة بالسجن مايشوف الا روم ss").setRequired(true).setMaxLength(300)),
   ];
 }
 
@@ -448,10 +449,12 @@ export async function handleCommunityCommand(interaction: ChatInputCommandIntera
         ? `إنشاء روم نصي **#${proposal.name}** · ${proposal.visibility === "private" ? "خاص (مخفي عن @everyone)" : "عام"}`
         : proposal.kind === "create_role"
           ? `إنشاء رتبة **${proposal.name}** بدون أي صلاحيات إدارية أو Administrator`
-          : `تغيير ظهور روم **#${proposal.channelName}** إلى ${proposal.visibility === "private" ? "خاص" : "عام"}`;
+          : proposal.kind === "create_jail_role"
+            ? `إنشاء رتبة سجن **${proposal.roleName}** بلا صلاحيات إدارية، وربطها بسجن نصي واحد **#${proposal.allowedChannelName}**. أعضاء هذه الرتبة لن يروا أو يتكلموا في الرومات الأخرى.`
+            : `تغيير ظهور روم **#${proposal.channelName}** إلى ${proposal.visibility === "private" ? "خاص" : "عام"}`;
       const confirm = new ButtonBuilder().setCustomId(`adminassist:confirm:${nonce}`).setStyle(ButtonStyle.Success).setLabel("تأكيد آمن");
       const cancel = new ButtonBuilder().setCustomId(`adminassist:cancel:${nonce}`).setStyle(ButtonStyle.Secondary).setLabel("إلغاء");
-      await interaction.reply({ ephemeral: true, embeds: [new EmbedBuilder().setColor(0x5865f2).setAuthor({ name: "🛡️ مجلساوي • SAFE ADMIN ASSISTANT" }).setTitle("راجع التغيير قبل تنفيذه").setDescription(detail).addFields({ name: "قيود دائمة", value: "لا حذف، لا Administrator، لا Webhooks أو Integrations، ولا تعديل صلاحيات جماعي." }).setFooter({ text: "تنتهي هذه المعاينة خلال 5 دقائق" })], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(confirm, cancel)] });
+      await interaction.reply({ ephemeral: true, embeds: [new EmbedBuilder().setColor(0x5865f2).setAuthor({ name: "🛡️ مجلساوي • SAFE ADMIN ASSISTANT" }).setTitle("راجع التغيير قبل تنفيذه").setDescription(detail).addFields({ name: "قيود دائمة", value: "لا حذف، لا Administrator، لا Webhooks أو Integrations، ولا تعديل صلاحيات لأعضاء أو رتب موجودة. خطة السجن تضبط رتبة جديدة فقط." }).setFooter({ text: "تنتهي هذه المعاينة خلال 5 دقائق" })], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(confirm, cancel)] });
       return;
     }
     if (["help", "faq", "complaint", "eventidea"].includes(command)) {
@@ -2066,6 +2069,7 @@ export function startDiscordBot() {
         }
         try {
           const botMember = interaction.guild.members.me;
+          if (!botMember) throw new Error("تعذر التحقق من عضو البوت داخل السيرفر.");
           const proposal = pending!.proposal;
           const capability = validateBotAdminAssistantCapability(proposal, { manageChannels: Boolean(botMember?.permissions.has(PermissionFlagsBits.ManageChannels)), manageRoles: Boolean(botMember?.permissions.has(PermissionFlagsBits.ManageRoles)) });
           if (!capability.allowed) throw new Error(capability.reason === "missing_manage_roles" ? "البوت يحتاج Manage Roles لإنشاء الرتبة." : "البوت يحتاج Manage Channels لإدارة الروم.");
@@ -2078,6 +2082,24 @@ export function startDiscordBot() {
             if (!botMember?.permissions.has(PermissionFlagsBits.ManageRoles)) throw new Error("البوت يحتاج Manage Roles لإنشاء الرتبة.");
             const role = await interaction.guild.roles.create({ name: proposal.name, permissions: [], reason: "مجلساوي safe admin assistant" });
             targetLabel = role.name;
+          } else if (proposal.kind === "create_jail_role") {
+            const allowedChannel = interaction.guild.channels.cache.find(item => item.type === ChannelType.GuildText && item.name === proposal.allowedChannelName) as TextChannel | undefined;
+            if (!allowedChannel) throw new Error("لم أجد روم سجن نصي مطابقاً للاسم المطلوب.");
+            const existingRole = interaction.guild.roles.cache.find(role => role.name.toLocaleLowerCase() === proposal.roleName.toLocaleLowerCase());
+            if (existingRole) throw new Error("توجد رتبة بنفس الاسم بالفعل؛ اختر اسماً جديداً بدلاً من تعديل رتبة موجودة.");
+            const channelsToRestrict = Array.from(interaction.guild.channels.cache.values()).filter((item): item is NonThreadGuildBasedChannel => item.id !== allowedChannel.id && item.type !== ChannelType.GuildCategory && "permissionOverwrites" in item);
+            const inaccessibleChannel = channelsToRestrict.find(item => !item.permissionsFor(botMember).has(PermissionFlagsBits.ManageChannels));
+            if (!allowedChannel.permissionsFor(botMember).has(PermissionFlagsBits.ManageChannels) || inaccessibleChannel) throw new Error(`البوت يحتاج Manage Channels في كل الرومات المستهدفة${inaccessibleChannel ? `، ومنها #${inaccessibleChannel.name}` : ""}.`);
+            const role = await interaction.guild.roles.create({ name: proposal.roleName, permissions: [], reason: "مجلساوي confirmed jail-role assistant" });
+            try {
+              await Promise.all(channelsToRestrict.map(channel => channel.permissionOverwrites.edit(role, { ViewChannel: false, SendMessages: false, Connect: false, Speak: false }, { reason: "مجلساوي jail-role access plan" })));
+              await allowedChannel.permissionOverwrites.edit(role, { ViewChannel: true, SendMessages: true, ReadMessageHistory: true }, { reason: "مجلساوي jail-role allowed room" });
+              await saveGuildSettings({ guildId: interaction.guild.id, guildName: interaction.guild.name, jailRoleId: role.id, jailChannelId: allowedChannel.id });
+            } catch (error) {
+              await role.delete("مجلساوي rollback for incomplete jail-role plan").catch(() => undefined);
+              throw error;
+            }
+            targetLabel = `${role.name} → #${allowedChannel.name}`;
           } else {
             if (!botMember?.permissions.has(PermissionFlagsBits.ManageChannels)) throw new Error("البوت يحتاج Manage Channels لتعديل ظهور الروم.");
             const channel = interaction.guild.channels.cache.find(item => item.type === ChannelType.GuildText && item.name === proposal.channelName) as TextChannel | undefined;

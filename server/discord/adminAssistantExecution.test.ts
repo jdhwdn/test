@@ -15,5 +15,9 @@ describe("admin assistant execution checks", () => {
   it("requires bot hierarchy capabilities for the proposed resource type", () => {
     expect(validateBotAdminAssistantCapability(pending.proposal, { manageChannels: true, manageRoles: false })).toMatchObject({ reason: "missing_manage_roles" });
     expect(validateBotAdminAssistantCapability({ kind: "update_channel_visibility", channelName: "staff", visibility: "private" }, { manageChannels: false, manageRoles: true })).toMatchObject({ reason: "missing_manage_channels" });
+    const jailProposal = { kind: "create_jail_role" as const, roleName: "تالف", allowedChannelName: "ss" };
+    expect(validateBotAdminAssistantCapability(jailProposal, { manageChannels: true, manageRoles: false })).toMatchObject({ reason: "missing_manage_roles" });
+    expect(validateBotAdminAssistantCapability(jailProposal, { manageChannels: false, manageRoles: true })).toMatchObject({ reason: "missing_manage_channels" });
+    expect(validateBotAdminAssistantCapability(jailProposal, { manageChannels: true, manageRoles: true })).toEqual({ allowed: true });
   });
 });
